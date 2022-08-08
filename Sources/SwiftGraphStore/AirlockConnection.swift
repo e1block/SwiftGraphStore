@@ -116,7 +116,10 @@ public class AirlockConnection: AirlockConnecting {
                 case .failure(let error):
                     subject.send(completion: .failure(error))
                 case .success(let data):
-                    subject.send(data!)
+                    if let data = data {
+                        subject.send(data)
+                    }
+
                     subject.send(completion: .finished)
                 }
             }
