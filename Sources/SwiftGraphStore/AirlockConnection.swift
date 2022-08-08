@@ -9,7 +9,9 @@ public class AirlockConnection: AirlockConnecting {
     public var graphStoreSubscription: AnyPublisher<Data, SubscribeError> {
         graphStoreSubject.eraseToAnyPublisher()
     }
-    
+
+    let subjectVar = PassthroughSubject<Data, AFError>()
+
     private let client: Client
     
     public private(set) var ship: Ship?
@@ -96,7 +98,6 @@ public class AirlockConnection: AirlockConnecting {
     }
 
     public func requestStartSubscription2(ship: Ship, app: App, path: Path) -> AnyPublisher<Data, AFError> {
-        let subject = PassthroughSubject<Data, AFError>()
 
         client
             .subscribeRequest(ship: ship, app: app, path: path) { event in
@@ -114,17 +115,17 @@ public class AirlockConnection: AirlockConnecting {
             .response { response in
                 switch response.result {
                 case .failure(let error):
-                    subject.send(completion: .failure(error))
+                    self.subjectVar.send(completion: .failure(error))
                 case .success(let data):
                     if let data = data {
-                        subject.send(data)
+                        self.subjectVar.send(data)
                     }
 
-                    subject.send(completion: .finished)
+                    self.subjectVar.send(completion: .finished)
                 }
             }
 
-        return subject.eraseToAnyPublisher()
+        return subjectVar.eraseToAnyPublisher()
     }
     
     // NOTE: This function is for testing purposes, to grab the raw output for a scry
