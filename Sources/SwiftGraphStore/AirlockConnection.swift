@@ -94,6 +94,35 @@ public class AirlockConnection: AirlockConnecting {
         
         return subject.eraseToAnyPublisher()
     }
+
+    public func requestStartSubscription2(ship: Ship, app: App, path: Path) -> AnyPublisher<Data, AFError> {
+        let subject = PassthroughSubject<Data, AFError>()
+
+        client
+            .subscribeRequest(ship: ship, app: app, path: path) { event in
+                switch event {
+                case .started:
+                    break
+                case .failure(let subscribeError):
+                    self.graphStoreSubject.send(completion: .failure(subscribeError))
+                case .update(let data):
+                    self.graphStoreSubject.send(data)
+                case .finished:
+                    self.graphStoreSubject.send(completion: .finished)
+                }
+            }
+            .response { response in
+                switch response.result {
+                case .failure(let error):
+                    subject.send(completion: .failure(error))
+                case .success(let data):
+                    subject.send(data!)
+                    subject.send(completion: .finished)
+                }
+            }
+
+        return subject.eraseToAnyPublisher()
+    }
     
     // NOTE: This function is for testing purposes, to grab the raw output for a scry
     public func requestTestScry(app: App, path: Path) -> AnyPublisher<String, AFError> {
