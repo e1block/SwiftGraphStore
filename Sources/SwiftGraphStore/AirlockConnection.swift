@@ -5,12 +5,16 @@ import UrsusHTTP
 import UrsusAtom
 
 public class AirlockConnection: AirlockConnecting {
+
     private var graphStoreSubject = PassthroughSubject<Data, SubscribeError>()
     public var graphStoreSubscription: AnyPublisher<Data, SubscribeError> {
         graphStoreSubject.eraseToAnyPublisher()
     }
 
     let subjectVar = PassthroughSubject<Data, AFError>()
+    public var airlockGraphStoreSubscription: AnyPublisher<Data, AFError> {
+        subjectVar.eraseToAnyPublisher()
+    }
 
     private let client: Client
     
