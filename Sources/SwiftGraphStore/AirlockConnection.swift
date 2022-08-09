@@ -107,7 +107,7 @@ public class AirlockConnection: AirlockConnecting {
                 case .failure(let subscribeError):
                     self.graphStoreSubject.send(completion: .failure(subscribeError))
                 case .update(let data):
-                    self.graphStoreSubject.send(data)
+                    self.subjectVar.send(data)
                 case .finished:
                     self.graphStoreSubject.send(completion: .finished)
                 }
