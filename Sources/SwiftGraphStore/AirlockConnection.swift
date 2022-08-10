@@ -11,7 +11,7 @@ public class AirlockConnection: AirlockConnecting {
         graphStoreSubject.eraseToAnyPublisher()
     }
 
-    let subjectVar = PassthroughSubject<Data, AFError>()
+    public let subjectVar = PassthroughSubject<Data, AFError>()
     public var airlockGraphStoreSubscription: AnyPublisher<Data, AFError> {
         subjectVar.eraseToAnyPublisher()
     }
