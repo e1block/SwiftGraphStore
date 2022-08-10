@@ -125,7 +125,7 @@ public class AirlockConnection: AirlockConnecting {
                         self.subjectVar.send(data)
                     }
 
-                    self.subjectVar.send(completion: .finished)
+//                    self.subjectVar.send(completion: .finished)
                 }
             }
 
