@@ -108,12 +108,12 @@ public class AirlockConnection: AirlockConnecting {
                 switch event {
                 case .started:
                     break
-                case .failure(let subscribeError):
-                    self.graphStoreSubject.send(completion: .failure(subscribeError))
+                case .failure:
+                    self.subjectVar.send(completion: .failure(AFError.explicitlyCancelled))
                 case .update(let data):
                     self.subjectVar.send(data)
                 case .finished:
-                    self.graphStoreSubject.send(completion: .finished)
+                    self.subjectVar.send(completion: .finished)
                 }
             }
             .response { response in
